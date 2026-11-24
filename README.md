@@ -1,6 +1,6 @@
 # Must-See Menu
 
-A static Toronto restaurant guide with a 1990s sitcom living-room look. Foodies can browse real restaurants by neighbourhood, cuisine, and price, ask the audience for a random table, or see places newly added to the map.
+A static Toronto restaurant guide with a 1990s sitcom living-room look. Foodies can browse real restaurants by neighbourhood and cuisine, ask the audience for a random table, or see places newly added to the map. A price filter appears when the snapshot includes price tags.
 
 ## Data
 
@@ -10,7 +10,7 @@ Listings come from [OpenStreetMap](https://www.openstreetmap.org/copyright), fet
 
 What each field uses:
 
-- **Name, coordinates, cuisine, address, phone, hours, website, opening date, and price** are copied from OpenStreetMap tags. A missing price stays missing. The guide does not estimate `$` / `$$` / `$$$`.
+- **Name, coordinates, cuisine, address, phone, hours, website, opening date, and price** are copied from OpenStreetMap tags. A missing price stays missing. The guide does not estimate `$` / `$$` / `$$$`. The price filter and the price line on each card stay hidden until at least one restaurant in the snapshot has a price tag.
 - **City neighbourhoods** come from Toronto `admin_level=10` boundary relations.
 - **Kensington** and **Chinatown** follow the Kensington Market and Kensington-Chinatown boundaries.
 - **Ossington, Queen West, Little Italy, the Danforth, and Leslieville** are restaurants within about a block of those streets, using the road geometry from OpenStreetMap. The exact clips live in `scripts/fetch-restaurants.mjs`.

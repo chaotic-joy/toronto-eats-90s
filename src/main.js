@@ -20,6 +20,7 @@ const state = {
   page: 1,
   surprise: null,
   laughs: 0,
+  hasPriceData: false,
 };
 
 const directory = document.getElementById("directory");
@@ -98,9 +99,9 @@ function matches(restaurant) {
   } else if (state.cuisine && !restaurant.cuisines?.includes(state.cuisine)) {
     return false;
   }
-  if (state.price === "none") {
+  if (state.hasPriceData && state.price === "none") {
     if (restaurant.price) return false;
-  } else if (state.price && restaurant.price !== state.price) {
+  } else if (state.hasPriceData && state.price && restaurant.price !== state.price) {
     return false;
   }
   if (state.whatsNew && !isFresh(restaurant)) return false;
@@ -130,7 +131,7 @@ function episodeTitle() {
   if (place) return `The One in ${place}`;
   if (state.whatsNew) return "The One With the New Kid";
   if (state.query.trim()) return "The One Where You Know the Name";
-  if (state.price && state.price !== "none") return "The One With the Price Tag";
+  if (state.hasPriceData && state.price && state.price !== "none") return "The One With the Price Tag";
   return "The One Where You Scroll the Menu";
 }
 
@@ -222,12 +223,12 @@ function renderCard(restaurant, index) {
   const map = mapsUrl(restaurant);
   const primaryHref = website || map;
   const stamps = [
-    el("span", { class: "stamp", text: priceText(restaurant.price) }),
+    state.hasPriceData ? el("span", { class: "stamp", text: priceText(restaurant.price) }) : null,
     restaurant.outdoor ? el("span", { class: "stamp", text: "Patio" }) : null,
     restaurant.vegan ? el("span", { class: "stamp", text: "Vegan tagged" }) : null,
     !restaurant.vegan && restaurant.vegetarian ? el("span", { class: "stamp", text: "Vegetarian tagged" }) : null,
     isFresh(restaurant) ? el("span", { class: "stamp fresh", text: restaurant.startDate ? `Opened ${restaurant.startDate}` : "New on the map" }) : null,
-  ];
+  ].filter(Boolean);
 
   return el("article", { class: "card" }, [
     el("p", { class: "guest-no", text: `Guest star ${index + 1}` }),
@@ -242,7 +243,7 @@ function renderCard(restaurant, index) {
       el("span", { class: "cuisine", text: cuisine }),
     )),
     el("p", { class: "address", text: addressLine(restaurant) }),
-    el("div", { class: "stamps" }, stamps),
+    stamps.length ? el("div", { class: "stamps" }, stamps) : null,
     restaurant.openingHours
       ? restaurant.openingHours.length > 140
         ? el("details", { class: "hours" }, [
@@ -285,7 +286,7 @@ function renderDialog() {
         el("h2", { id: "guest-title", text: surprise.name }),
         el("p", { text: `${surprise.neighbourhood}${surprise.cuisines?.length ? ` · ${surprise.cuisines.join(", ")}` : ""}` }),
         el("p", { text: addressLine(surprise) }),
-        el("p", { text: `Price on the script: ${priceText(surprise.price)}` }),
+        state.hasPriceData ? el("p", { text: `Price on the script: ${priceText(surprise.price)}` }) : null,
         el("div", { class: "guest-actions" }, [
           surprise.website ? externalLink(surprise.website, "primary", "Visit their site") : null,
           externalLink(mapsUrl(surprise), surprise.website ? "" : "primary", "Search on Google Maps"),
@@ -344,8 +345,8 @@ function renderResults() {
   if (hoodPhrase()) bits.push(hoodPhrase());
   if (state.cuisine === "__none__") bits.push("cuisine not recorded");
   else if (state.cuisine) bits.push(state.cuisine);
-  if (state.price === "none") bits.push("price not recorded");
-  else if (state.price) bits.push(state.price);
+  if (state.hasPriceData && state.price === "none") bits.push("price not recorded");
+  else if (state.hasPriceData && state.price) bits.push(state.price);
   if (state.whatsNew) bits.push("new on the map");
   if (state.query.trim()) bits.push(`matching “${state.query.trim()}”`);
   const where = bits.length ? bits.join(" · ") : "all of Toronto";
@@ -358,7 +359,7 @@ function renderResults() {
   results.replaceChildren();
 
   if (!pageItems.length) {
-    const priceMiss = state.price && state.price !== "none";
+    const priceMiss = state.hasPriceData && state.price && state.price !== "none";
     results.append(
       el("div", { class: "empty" }, [
         el("h3", { text: priceMiss ? "No dollar sign on this call sheet" : "The audience is quiet" }),
@@ -428,6 +429,9 @@ function buildShell() {
     }
     if (restaurant.price) priceCounts.set(restaurant.price, (priceCounts.get(restaurant.price) || 0) + 1);
   }
+  const recordedPrices = [...priceCounts.values()].reduce((sum, count) => sum + count, 0);
+  state.hasPriceData = recordedPrices > 0;
+  if (!state.hasPriceData) state.price = "";
 
   hoodSelect = el("select", { id: "hood", name: "hood" }, [
     option("", "Every neighbourhood"),
@@ -494,10 +498,10 @@ function buildShell() {
         }),
       ),
     ]),
-    el("div", { class: "fields" }, [
+    el("div", { class: state.hasPriceData ? "fields has-price" : "fields" }, [
       el("label", {}, ["Neighbourhood", hoodSelect]),
       el("label", {}, ["Cuisine", cuisineSelect]),
-      el("label", {}, ["Price", priceSelect]),
+      state.hasPriceData ? el("label", {}, ["Price", priceSelect]) : null,
     ]),
     el("label", { class: "search-field" }, ["Search the call sheet", searchInput]),
     el("div", { class: "actions-row" }, [
@@ -531,7 +535,9 @@ function buildShell() {
     ]),
     el("p", {
       class: "hint",
-      text: "What's new keeps places added to OpenStreetMap in the last two years, and any opening date a mapper wrote down. Prices are the dollar signs stored on the map.",
+      text: state.hasPriceData
+        ? "What's new keeps places added to OpenStreetMap in the last two years, and any opening date a mapper wrote down. Prices are the dollar signs stored on the map."
+        : "What's new keeps places added to OpenStreetMap in the last two years, and any opening date a mapper wrote down.",
     }),
   ]);
 
@@ -565,9 +571,9 @@ function buildShell() {
     el("div", { class: "pager", id: "pager" }),
   );
 
-  const recordedPrices = [...priceCounts.values()].reduce((sum, count) => sum + count, 0);
   const when = state.payload.fetchedAt ? new Date(state.payload.fetchedAt).toLocaleDateString("en-CA", { dateStyle: "long" }) : "the latest snapshot";
-  document.getElementById("credit-meta").textContent = `${state.payload.count} restaurants in this snapshot, fetched ${when}. ${recordedPrices} have a price tag in OpenStreetMap. ${state.payload.attribution}.`;
+  const priceCredit = state.hasPriceData ? ` ${recordedPrices} have a price tag in OpenStreetMap.` : "";
+  document.getElementById("credit-meta").textContent = `${state.payload.count} restaurants in this snapshot, fetched ${when}.${priceCredit} ${state.payload.attribution}.`;
 }
 
 function showError(message) {
