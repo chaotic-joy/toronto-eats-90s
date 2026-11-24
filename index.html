@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Must-See Menu — Toronto restaurants</title>
+    <meta
+      name="description"
+      content="Must-See Menu is a Toronto restaurant guide with a 1990s sitcom living-room look. Browse real OpenStreetMap restaurants by neighbourhood, cuisine, and price."
+    />
+    <meta name="theme-color" content="#efd3a4" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@500;700;800&family=Oswald:wght@500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/src/styles.css" />
+  </head>
+  <body>
+    <a class="skip" href="#directory">Skip to the restaurants</a>
+
+    <header class="living-room">
+      <p class="network">Channel 416 · Thursday night · filmed before a live studio audience</p>
+      <div class="set-row">
+        <svg class="prop lamp" viewBox="0 0 80 150" aria-hidden="true">
+          <ellipse cx="40" cy="16" rx="30" ry="12" fill="#ffe7a3" />
+          <path d="M12 34 L40 6 L68 34 L58 44 L22 44 Z" fill="#f2c14e" stroke="#2a160f" stroke-width="3" />
+          <rect x="36" y="44" width="8" height="78" fill="#6b3a22" stroke="#2a160f" stroke-width="3" />
+          <rect x="20" y="120" width="40" height="12" rx="2" fill="#6b3a22" stroke="#2a160f" stroke-width="3" />
+        </svg>
+
+        <div class="titlecard">
+          <p class="on-air"><span class="led" aria-hidden="true"></span> On air</p>
+          <p class="presented">A Channel 416 presentation</p>
+          <h1>Must-See<br />Menu</h1>
+          <p class="tagline">Toronto restaurants, from the couch.</p>
+        </div>
+
+        <div class="side-props">
+          <svg class="prop plant" viewBox="0 0 90 150" aria-hidden="true">
+            <path d="M45 86 C18 66 16 28 34 18 C28 50 38 70 45 86Z" fill="#0f6f6c" stroke="#2a160f" stroke-width="3" />
+            <path d="M45 86 C74 64 76 26 58 14 C64 48 54 70 45 86Z" fill="#148f86" stroke="#2a160f" stroke-width="3" />
+            <path d="M45 88 C38 48 50 18 46 8 C54 40 54 66 45 88Z" fill="#0a4e4c" stroke="#2a160f" stroke-width="3" />
+            <rect x="30" y="86" width="30" height="38" rx="4" fill="#9c1d4e" stroke="#2a160f" stroke-width="3" />
+            <ellipse cx="45" cy="86" rx="18" ry="7" fill="#3e2114" stroke="#2a160f" stroke-width="3" />
+          </svg>
+          <button type="button" class="applause" id="applause">
+            <span class="applause-label">Applause</span>
+            <span class="laughs" id="laughs">0 laughs</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="couch-wrap" aria-hidden="true">
+        <div class="couch-back"></div>
+        <div class="pillow a"></div>
+        <div class="pillow b"></div>
+        <div class="pillow c"></div>
+        <div class="arm left"></div>
+        <div class="arm right"></div>
+        <div class="couch-seat"></div>
+        <div class="leg left"></div>
+        <div class="leg right"></div>
+      </div>
+    </header>
+
+    <div class="floor" aria-hidden="true"></div>
+
+    <main>
+      <section class="tv" aria-label="Tonight's episode">
+        <div class="bezel">
+          <div class="screen" id="directory">
+            <p class="standby">Please stand by. Tuning the set to Toronto.</p>
+          </div>
+          <div class="tv-chin">
+            <span>Channel 416</span>
+            <span class="knobs" aria-hidden="true"><i></i><i></i></span>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="credits">
+      <p class="credits-kicker">End credits</p>
+      <p>
+        Restaurant names, locations, cuisines, hours, phones, and websites are from
+        <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, under the
+        <a href="https://opendatacommons.org/licenses/odbl/1-0/">Open Database License</a>.
+        Neighbourhood names are Toronto's mapped boundaries. Kensington and Chinatown use those
+        boundaries. Ossington, Queen West, Little Italy, the Danforth, and Leslieville list places
+        within about a block of the street.
+      </p>
+      <p>
+        Prices appear only when a mapper recorded <code>price_range</code>, <code>price</code>, or
+        <code>cost</code>. The guide does not guess a dollar sign.
+      </p>
+      <p id="credit-meta"></p>
+    </footer>
+
+    <dialog id="guest-dialog" aria-labelledby="guest-title"></dialog>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

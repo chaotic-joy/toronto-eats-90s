@@ -1,0 +1,16 @@
+{
+  "name": "toronto-eats-90s",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "fetch-data": "node scripts/fetch-restaurants.mjs",
+    "prebuild": "node scripts/fetch-restaurants.mjs",
+    "build": "node scripts/validate-snapshot.mjs && vite build",
+    "dev": "vite",
+    "preview": "vite preview --host 0.0.0.0 --port 4173"
+  },
+  "devDependencies": {
+    "vite": "^6.3.5"
+  }
+}
